@@ -20,7 +20,7 @@ def Sig(N):
 def Part(N, T):
     Z=0
     for s in Sig(N):
-        #idk
+        #test thing
         
 
 
