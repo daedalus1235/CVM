@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 def Sig(N):
     sig=[]
@@ -17,12 +18,11 @@ def Sig(N):
         sig.append(sigi)
     return sig
 
-def Part(N, T):
+def Part(N, B, h, J):
     Z=0
     for s in Sig(N):
-        #test thing
-        
-
+        Z+=math.exp(-B*Ham(s,h,J))
+    return Z
 
 def Ham(s, h, J):
     Hh=0
@@ -35,10 +35,11 @@ def Ham(s, h, J):
     return H
 
 def Ent(s, h, J):
-
+    return 0
 
 
 def minH(N,h,J):
+    start = time.time()
     configs=Sig(N)
     Hmin=Ham(configs[0],h,J)
     imin=[]
@@ -59,4 +60,7 @@ def minH(N,h,J):
     for state in imin:
         n+=1
         print("State ", n,": ", configs[state])
+    
+    print("Execution time:", time.time()-start, "s")
+    
     return Hmin
