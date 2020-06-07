@@ -18,12 +18,6 @@ def Sig(N):
         sig.append(sigi)
     return sig
 
-def Part(N, B, h, J):
-    Z=0
-    for s in Sig(N):
-        Z+=math.exp(-B*Ham(s,h,J))
-    return Z
-
 def Ham(s, h, J):
     Hh=0
     Hj=0
@@ -33,10 +27,6 @@ def Ham(s, h, J):
         Hj+=s[x]*s[x+1]
     H=h*Hh+J*Hj
     return H
-
-def Ent(s, h, J):
-    return 0
-
 
 def minH(N,h,J):
     start = time.time()
@@ -64,3 +54,8 @@ def minH(N,h,J):
     print("Execution time:", time.time()-start, "s")
     
     return Hmin
+
+def Ent():
+    return 0
+
+
