@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import time
 
@@ -54,8 +55,3 @@ def minH(N,h,J):
     print("Execution time:", time.time()-start, "s")
     
     return Hmin
-
-def Ent():
-    return 0
-
-
