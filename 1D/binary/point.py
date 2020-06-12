@@ -6,13 +6,13 @@ import scipy.optimize as opt
 def H(J,h,x):
     return -J*x*(1-x)-h*x
 
-def S(J,h,x):
+def S(x):
     if abs(x-.5)<.5:
         return -x*math.log(x)-(1-x)*math.log(1-x)
     return 0
 
 def F(J,h,T,x):
-    return H(J,h,x)-T*S(J,h,x)
+    return H(J,h,x)-T*S(x)
 
 def FvT(J, hpj=1):
     x = np.linspace(0,1,1000)
