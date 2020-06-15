@@ -40,5 +40,6 @@ def Test():
     res=opt.brute(Sp, rranges, full_output=True, finish=opt.fmin)
     return res
 
-def FvT:
+def FvT():
+    
 
