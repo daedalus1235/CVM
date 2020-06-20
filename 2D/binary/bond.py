@@ -4,19 +4,23 @@ from mpl_toolkits.mplot3d import Axes3D
 import math
 import scipy.optimize as opt
 
+Z=4
+
 def xlx(x):
     if x==0:return 0
     return x*math.log(x)
 
 def H(J,h,x,y):
-    return -2*J*y-h*x
+    return -Z*J*y-h*x
 
 def S(x, y):
     Sx,Sy=0,0
     if abs(x-.5)<0.5:
         Sx=xlx(x)+xlx(1-x)
+        Sx*=(Z-1)
         if y<=x and y<=1-x: 
             Sy=xlx(x-y)+2*xlx(y)+xlx(1-x-y)
+            Sy*=(Z/2)
             return Sx-Sy
     return -1 
 
