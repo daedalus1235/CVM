@@ -54,7 +54,7 @@ def XYvT(J, hpj=1):
     ax.set_xlabel('Temperature (T/J)')
     ax.set_ylabel('Min Free Energy')
     ax.plot(Temp, Free, label='min free energy')
-    
+   
     
     #plot composition wrt temp
     ax=fig.add_subplot(2,1,2, projection='3d')

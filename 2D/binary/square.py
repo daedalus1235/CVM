@@ -15,6 +15,7 @@ def xlx(x):
 
 def H(J,h,z):
     x = z[1]+2*z[2]+z[3]+3*z[4]+z[5]
+
     y = z[1]+z[2]+z[3]+z[4]
     return -4*J*y-h*x
 
@@ -64,7 +65,7 @@ def min(J, hpj=1):
         free = lambda z: F(J, h, z, Tpj*abs(J))
 
         res = opt.minimize(free,                           #minimize free energy
-                [0.125,0.125, 0.125, 0.125, 0.125, 0.125], #starting guess at centre
+                [0.0625,0.0625, 0.0625, 0.0625, 0.0625, 0.0625], #starting guess at centre
                 method = 'trust-constr',                   #optimization method
                 constraints = con, bounds = bound)        #set constraints on variables
         
