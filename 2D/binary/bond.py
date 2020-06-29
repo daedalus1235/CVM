@@ -15,7 +15,7 @@ def H(J,h,x,y):
 
 def S(x, y):
     Sx,Sy=0,0
-    if abs(x-.5)<0.5:
+    if abs(x-.5)<=0.5:
         Sx=xlx(x)+xlx(1-x)
         Sx*=(Z-1)
         if y<=x and y<=1-x: 
@@ -28,9 +28,8 @@ def F(J,h,x,y,T):
     if T==0: return H(J,h,x,y)
     return H(J, h, x, y)-T*S(x,y)
 
-def XYvT(J, hpj=1):
+def XYvT(J=1, hpj=1):
     Temp = np.linspace(0,10,201) 
-    rranges=(slice(0,1,0.01), slice(0,0.5,0.01))
     
     con = opt.LinearConstraint([[1,0],[-1,1],[1,1]],[0,-np.inf,-np.inf],[1,0,1])
     bound = opt.Bounds([0,0],[1,0.5])
@@ -65,3 +64,84 @@ def XYvT(J, hpj=1):
 
     plt.show()
 
+def debugH(J=1,h=1):
+    x,y=[],[]
+    dx,dy=0.05, 0.05
+    
+    i=0
+
+    while i<=1:
+        j=0
+        while j<=i and j<=(1-i):
+            x.append(i)
+            y.append(j)
+            j+=dy
+        i+=dx
+
+    Ham=np.vectorize(H)
+
+    z=Ham(J,h,x,y)
+
+    fig = plt.figure()
+    ax=fig.gca(projection='3d')
+
+    ax.plot_trisurf(x,y,z)
+    ax.set_xlabel('Composition: X')
+    ax.set_ylabel('Bond Frequency: Y')
+    ax.set_zlabel('Hamiltonian')
+    plt.show()
+
+def debugTS(Temp=1):
+    x,y=[],[]
+    dx,dy=0.01, 0.01
+    
+    i=0
+
+    while i<=1:
+        j=0
+        while j<=i and j<=(1-i):
+            x.append(i)
+            y.append(j)
+            j+=dy
+        i+=dx
+
+    Ent=np.vectorize(S)
+
+    z=Temp*Ent(x,y)
+
+    fig = plt.figure()
+    ax=fig.gca(projection='3d')
+
+    ax.plot_trisurf(x,y,z, linewidth=0)
+    ax.set_xlabel('Composition: X')
+    ax.set_ylabel('Bond Frequency: Y')
+    ax.set_zlabel('Entropy')
+    plt.show()
+
+
+def debugF(J=1,h=1, T=1):
+    x,y=[],[]
+    dx,dy=0.05, 0.05
+    
+    i=0
+
+    while i<=1:
+        j=0
+        while j<=1: #j<=i and j<=(1-i):
+            x.append(i)
+            y.append(j)
+            j+=dy
+        i+=dx
+
+    Free=np.vectorize(F)
+
+    z=Free(J,h,x,y,T)
+
+    fig = plt.figure()
+    ax=fig.gca(projection='3d')
+
+    ax.plot_trisurf(x,y,z)
+    ax.set_xlabel('Composition: X')
+    ax.set_ylabel('Bond Frequency: Y')
+    ax.set_zlabel('Hamiltonian')
+    plt.show()
