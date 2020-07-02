@@ -13,13 +13,13 @@ def xlx(x):
     if x==0: return 0
     return x*math.log(x)
 
-def H(J,h,z):
+def Ha(J,h,z):
     x = z[1]+2*z[2]+z[3]+3*z[4]+z[5]
 
     y = z[1]+z[2]+z[3]+z[4]
     return -4*J*y-h*x
 
-def S(z):
+def Sa(z):
     Sx, Sy, Sz = 0,0,0
 
     for i in range(6):
@@ -40,13 +40,13 @@ def S(z):
     
     return Sx-2*Sy+Sz
     
-def F(J,h,z,T):
-    if T == 0: return H(J,h,z) #might as well skip entropy calc if possible
-    return H(J,h,z)-T*S(z)
+def Fa(J,h,z,T):
+    if T == 0: return Ha(J,h,z) #might as well skip entropy calc if possible
+    return Ha(J,h,z)-T*Sa(z)
 
-def min(J, hpj=1):
+def min1(J=1, hpj=1):
     h = hpj*abs(J)
-    Temp = np.linspace(0,10,201)
+    Temp = np.linspace(0,4,51)
     
     #ensure reasonable compositions
     con = opt.LinearConstraint([[ 1, 3, 2, 1, 1, 0],  # 0 <= x   <= 1
@@ -62,7 +62,7 @@ def min(J, hpj=1):
         status="Calculating T/J:"+str(Tpj)
         print(status)
 
-        free = lambda z: F(J, h, z, Tpj*abs(J))
+        free = lambda z: Fa(J, h, z, Tpj*abs(J))
 
         res = opt.minimize(free,                           #minimize free energy
                 [0.0625,0.0625, 0.0625, 0.0625, 0.0625, 0.0625], #starting guess at centre
@@ -90,3 +90,4 @@ def min(J, hpj=1):
     ax.plot(mX, mY, Temp)
 
     plt.show()
+

@@ -8,6 +8,8 @@ Z=4
 
 def xlx(x):
     if x==0:return 0
+    if x>0.5:
+        return x*math.log1p(x-1)
     return x*math.log(x)
 
 def H(J,h,x,y):
@@ -22,17 +24,17 @@ def S(x, y):
             Sy=xlx(x-y)+2*xlx(y)+xlx(1-x-y)
             Sy*=(Z/2)
             return Sx-Sy
-    return -1 
+    return -1
 
 def F(J,h,x,y,T):
     if T==0: return H(J,h,x,y)
     return H(J, h, x, y)-T*S(x,y)
 
 def XYvT(J=1, hpj=1):
-    Temp = np.linspace(0,10,201) 
+    Temp = np.linspace(0,4,201) 
     
-    con = opt.LinearConstraint([[1,0],[-1,1],[1,1]],[0,-np.inf,-np.inf],[1,0,1])
-    bound = opt.Bounds([0,0],[1,0.5])
+    con = opt.LinearConstraint([[-1,1],[1,1]],[-np.inf,-np.inf],[0.0,1.0])#[0.001,0.999])
+    bound = opt.Bounds([0.0,0.0],[1.0,0.5])#([0.001,0.001],[0.999,0.499])
     
     Free, mX, mY=[],[],[]
     
@@ -59,6 +61,7 @@ def XYvT(J=1, hpj=1):
     ax=fig.add_subplot(2,1,2, projection='3d')
     ax.plot(mX, mY, Temp, label='min')
     ax.set_xlabel('Composition: X')
+    ax.set_xlim(0.0,1.0)
     ax.set_ylabel('Bond Frequency: Y')
     ax.set_zlabel('Temperature (T/J)')
 
