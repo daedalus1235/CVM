@@ -30,41 +30,66 @@ def F(J,h,x,y,T):
     if T==0: return H(J,h,x,y)
     return H(J, h, x, y)-T*S(x,y)
 
-def XYvT(J=1, hpj=1):
-    Temp = np.linspace(0,4,201) 
+def XYvT(J=1, hpj=1, samp=200, Tmax=4):
+    Temp = np.linspace(0,Tmax,samp+1) 
     
     con = opt.LinearConstraint([[-1,1],[1,1]],[-np.inf,-np.inf],[0.0,1.0])#[0.001,0.999])
     bound = opt.Bounds([0.0,0.0],[1.0,0.5])#([0.001,0.001],[0.999,0.499])
     
-    Free, mX, mY=[],[],[]
-    
-    for Tpj in Temp:
-        fun = lambda x: F(J, hpj*abs(J), x[0], x[1], Tpj*abs(J))
+    Free, E, C, mX, mY=[],[],[],[],[]
+    delta = Tmax/samp
+    for i in range(len(Temp)):
+        working="Calculating: T/J="+str(Temp[i])
+        print(working)
+        fun = lambda x: F(J, hpj*abs(J), x[0], x[1], Temp[i]*abs(J))
         res=opt.minimize(fun, [0.5,0.25], method='trust-constr', constraints=con, bounds=bound)
         mX.append(res.x[0])
         mY.append(res.x[1])
         Free.append(fun(res.x))
-        working="Calculating T/J:"+str(Tpj)
-        print(working)
-    
+        if i>1:
+            #Calculating E
+            dF=Free[i]-Free[i-2]
+            dF/=(2*delta)
+            E.append(Free[i-1]-Temp[i-1]*dF)
+            #Calculating C
+            ddF=Free[i]-2*Free[i-1]+Free[i-2]
+            ddF/=(delta**2)
+            C.append(-Temp[i-1]*ddF)
+
     fig = plt.figure(figsize=plt.figaspect(2.))
     fig.suptitle('2D square lattice, bond approx')
     
     #plot min free energy wrt temp
-    ax = fig.add_subplot(2,1,1)
+    print('Plotting free energy')
+    ax = fig.add_subplot(2,2,1)
     ax.set_xlabel('Temperature (T/J)')
     ax.set_ylabel('Min Free Energy')
     ax.plot(Temp, Free, label='min free energy')
    
-    
+ 
     #plot composition wrt temp
-    ax=fig.add_subplot(2,1,2, projection='3d')
+    print('Plotting composition')
+    ax=fig.add_subplot(2,2,2, projection='3d')
     ax.plot(mX, mY, Temp, label='min')
     ax.set_xlabel('Composition: X')
     ax.set_xlim(0.0,1.0)
     ax.set_ylabel('Bond Frequency: Y')
     ax.set_zlabel('Temperature (T/J)')
 
+    #plot E wrt temp
+    Tp=np.linspace(delta, Tmax-delta, samp-1)
+    ax=fig.add_subplot(2,2,3)
+    ax.plot(Tp, E)
+    ax.set_xlabel('Temperature (T/J)')
+    ax.set_ylabel('E=F-T*dF/dT')
+
+    #plot C wrt temp
+    ax=fig.add_subplot(2,2,4)
+    ax.plot(Tp, C)
+    ax.set_xlabel('Temperature (T/J)')
+    ax.set_ylabel('C=-T*d2F/dT2')
+
+    #display plots
     plt.show()
 
 def debugH(J=1,h=1):
