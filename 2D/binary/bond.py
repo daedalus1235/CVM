@@ -33,8 +33,8 @@ def F(J,h,x,y,T):
 def XYvT(J=1, hpj=1, samp=200, Tmax=4):
     Temp = np.linspace(0,Tmax,samp+1) 
     
-    con = opt.LinearConstraint([[-1,1],[1,1]],[-np.inf,-np.inf],[0.0,1.0])#[0.001,0.999])
-    bound = opt.Bounds([0.0,0.0],[1.0,0.5])#([0.001,0.001],[0.999,0.499])
+    con = opt.LinearConstraint([[-1,1],[1,1]],[-np.inf,-np.inf],[0.0,1.0]))
+    bound = opt.Bounds([0.0,0.0],[1.0,0.5])
     
     Free, E, C, mX, mY=[],[],[],[],[]
     delta = Tmax/samp
