@@ -59,7 +59,7 @@ def min(J=1, hpj=1):
     Temp = np.linspace(0,5,51)
     
     #starting guess
-    guess=[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625]u
+    guess=[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625]
 
     #ensure reasonable compositions
     con = opt.LinearConstraint([[ 1, 3, 2, 1, 1, 0],  # 0 <= x   <= 1

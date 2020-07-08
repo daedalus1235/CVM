@@ -4,7 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import math
 import scipy.optimize as opt
 
-Z=4
+Z=2
 
 def xlx(x):
     if x==0:return 0
@@ -30,10 +30,10 @@ def F(J,h,x,y,T):
     if T==0: return H(J,h,x,y)
     return H(J, h, x, y)-T*S(x,y)
 
-def XYvT(J=1, hpj=1, samp=200, Tmax=4):
-    Temp = np.linspace(0,Tmax,samp+1) 
+def min(J=1, hpj=1, samp=200, Tmax=4):
+    Temp = np.linspace(.5,Tmax,samp+1) 
     
-    con = opt.LinearConstraint([[-1,1],[1,1]],[-np.inf,-np.inf],[0.0,1.0]))
+    con = opt.LinearConstraint([[-1,1],[1,1]],[-np.inf,-np.inf],[0.0,1.0])
     bound = opt.Bounds([0.0,0.0],[1.0,0.5])
     
     Free, E, C, mX, mY=[],[],[],[],[]
@@ -155,7 +155,8 @@ def debugF(J=1,h=1, T=1):
 
     while i<=1:
         j=0
-        while j<=1: #j<=i and j<=(1-i):
+        #while j<=1: 
+        while j<=i and j<=(1-i):
             x.append(i)
             y.append(j)
             j+=dy
@@ -170,6 +171,8 @@ def debugF(J=1,h=1, T=1):
 
     ax.plot_trisurf(x,y,z)
     ax.set_xlabel('Composition: X')
+    ax.set_xlim(-0.1,1.1)
     ax.set_ylabel('Bond Frequency: Y')
-    ax.set_zlabel('Hamiltonian')
+    ax.set_ylim(-0.1,0.6)
+    ax.set_zlabel('Free Energy')
     plt.show()
