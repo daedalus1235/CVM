@@ -4,16 +4,18 @@ from mpl_toolkits.mplot3d import Axes3D
 import math
 import scipy.optimize as opt
 
-Z=2
+Z=4
 
 def xlx(x):
+    if x<0:return -1
     if x==0:return 0
     if x>0.5:
         return x*math.log1p(x-1)
     return x*math.log(x)
 
 def H(J,h,x,y):
-    return -Z*J*y-h*x
+    #return -Z*J*y-h*x
+    return -J*(Z/2)*(4*y-1)-h*(2*x-1)
 
 def S(x, y):
     Sx,Sy=0,0
@@ -30,22 +32,24 @@ def F(J,h,x,y,T):
     if T==0: return H(J,h,x,y)
     return H(J, h, x, y)-T*S(x,y)
 
-def min(J=1, hpj=1, samp=200, Tmax=4):
-    Temp = np.linspace(.5,Tmax,samp+1) 
+def min(J=1, hpj=1, samp=200, Trang=[0,4]):
+    Temp = np.linspace(Trang[0],Trang[1],samp+1) 
     
     con = opt.LinearConstraint([[-1,1],[1,1]],[-np.inf,-np.inf],[0.0,1.0])
     bound = opt.Bounds([0.0,0.0],[1.0,0.5])
+    guess = [0.,0.]
     
     Free, E, C, mX, mY=[],[],[],[],[]
-    delta = Tmax/samp
+    delta = (Trang[1]-Trang[0])/samp
     for i in range(len(Temp)):
         working="Calculating: T/J="+str(Temp[i])
         print(working)
         fun = lambda x: F(J, hpj*abs(J), x[0], x[1], Temp[i]*abs(J))
-        res=opt.minimize(fun, [0.5,0.25], method='trust-constr', constraints=con, bounds=bound)
+        res=opt.minimize(fun, guess, method='trust-constr', constraints=con, bounds=bound)
         mX.append(res.x[0])
         mY.append(res.x[1])
         Free.append(fun(res.x))
+        guess=res.x
         if i>1:
             #Calculating E
             dF=Free[i]-Free[i-2]
@@ -74,13 +78,16 @@ def min(J=1, hpj=1, samp=200, Tmax=4):
     ax.set_xlabel('Composition: X')
     ax.set_xlim(0.0,1.0)
     ax.set_ylabel('Bond Frequency: Y')
+    ax.set_ylim(0.0,0.5)
     ax.set_zlabel('Temperature (T/J)')
+    ax.set_zlim(0,Trang[1])
 
     #plot E wrt temp
-    Tp=np.linspace(delta, Tmax-delta, samp-1)
+    Tp=np.linspace(Trang[0]+delta, Trang[1]-delta, samp-1)
     ax=fig.add_subplot(2,2,3)
     ax.plot(Tp, E)
     ax.set_xlabel('Temperature (T/J)')
+    ax.set_ylim(-5,5)
     ax.set_ylabel('E=F-T*dF/dT')
 
     #plot C wrt temp
@@ -88,6 +95,15 @@ def min(J=1, hpj=1, samp=200, Tmax=4):
     ax.plot(Tp, C)
     ax.set_xlabel('Temperature (T/J)')
     ax.set_ylabel('C=-T*d2F/dT2')
+    ax.set_ylim(-5,5)
+    
+    #high temp slope, should be ln(2)~0.693
+    slope = Free[samp]-Free[math.floor(samp*0.75)]
+    slope /= (Temp[samp]-Temp[math.floor(samp*0.75)])
+    print('High temp slope: ' + str(slope))
+    #intercept
+    intercept=Free[samp]-slope*Temp[samp]
+    print('Intercept: ' + str(intercept))
 
     #display plots
     plt.show()
