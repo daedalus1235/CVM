@@ -23,7 +23,7 @@ def X(z):
 def H(J,h,z):
     x = X(z)
     y = Y(z)
-    #return -2*J*y[1]-h*x[1]
+    #return -4*J*y[1]-h*x[1]
     return -2*J*(2*y[1]-y[0]-y[2])-h*(x[0]-x[1])
 
 def S(z):
