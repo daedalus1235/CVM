@@ -7,7 +7,7 @@ import scipy.optimize as opt
 Z=4
 
 def xlx(x):
-    if x<0:return -1
+    if x<0:return 1
     if x==0:return 0
     if x>0.5:
         return x*math.log1p(x-1)

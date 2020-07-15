@@ -35,20 +35,24 @@ def S(z):
     Sx, Sy, Sz = 0,0,0
 
     for i in range(len(z)):
+        if z[i]<0: return -100
         Sz-=c[i]*xlx(z[i])
 
     y = Y(z)
 
     for i in range(len(y)):
+        if y[i]<0: return -100
         Sy-=b[i]*xlx(y[i])
 
     x = X(z)
 
     for i in range(len(x)):
+        if x[i]<0: return -100
         Sx-=a[i]*xlx(x[i])
     
     return Sx-2*Sy+Sz  #square
     #return 2*Sy-3*Sx   #bond
+    #return Sx
     
 def F(J,h,z,T):
     if T == 0: return H(J,h,z) #might as well skip entropy calc if possible
@@ -60,8 +64,9 @@ def min(J=1, hpj=1, samp=50, Trang=[0,5]):
     Temp = np.linspace(Trang[0],Trang[1],samp+1)
     
     #starting guess
-    #guess=[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625]
-    guess=[1,0,0,0,0,0]
+    guess=[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625]
+    #guess=[1,0,0,0,0,0]
+
 
     #ensure reasonable compositions
     con = opt.LinearConstraint([[ 1, 3, 2, 1, 1, 0],  # 0 <= x   <= 1
@@ -72,11 +77,11 @@ def min(J=1, hpj=1, samp=50, Trang=[0,5]):
     #restrict 0 <= zi <= 1
     bound = opt.Bounds([0,0,0,0,0,0],[1,1,1,1,1,1])
     
-    mF, mX, mY, E, C = [],[],[],[],[] #I need to choose consistent variable names...
+    mF, mX, mY, E, C = [],[],[],[],[] 
     delta = (Trang[1]-Trang[0])/samp
 
     for i in range(len(Temp)):
-        status=" Calculating T/J="+str(Temp[i])
+        status="Calculating T/J="+str(Temp[i])
         print(status)
 
         free = lambda z: F(J, h, z, Temp[i]*abs(J))
@@ -84,7 +89,11 @@ def min(J=1, hpj=1, samp=50, Trang=[0,5]):
                 guess,                             #guess is updated to previous result
                 method = 'trust-constr',           #optimization method
                 constraints = con,                 #set constraints...
-                bounds = bound)                    #... and bounds on variables
+                bounds = bound,                    #... and bounds on variables
+                options = {'gtol': 1e-12,          #gradient tolerance (?)
+                    'maxiter': 2500# ,               #maximum number of iterations
+                    #'xtol': 1e-9                  #x tolerance between iterations
+                })
         
         mF.append(free(res.x))
         tempx=X(res.x)
@@ -95,9 +104,10 @@ def min(J=1, hpj=1, samp=50, Trang=[0,5]):
 
         if tempy[1]>0.5:
             print(res)
-        else: print("z: "+str(res.x))
-        print("y: "+str(tempy))
-        print("x: "+str(tempx))
+        else: print(" z: "+str(res.x))
+        print(" y: "+str(tempy))
+        print(" x: "+str(tempx))
+        print(' F: '+str(mF[i]))
 
         if i>1:
             #calculate E
