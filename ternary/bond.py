@@ -46,6 +46,14 @@ def X(y):
     x.append(xi)
     return x
 
+def tot(y):
+    x=X(y)
+    total = 0
+    for xi in x: 
+        for xij in xi:
+            total += xij
+    return total
+
 #thermodynamic functions
 def H(J,h,y):
     return -dot(J,y)-dot(h,X(y))
@@ -76,5 +84,24 @@ def min(J=[[1,1,1],
             [1,0,0 ]],
         samp=51,
         Trang=[0,4]):
-    return 0
+
+    Temp = np.linspace(Trang[0], Trang[1], samp+1)
+
+    #starting guess
+    guess=[]
+    for i in range(9):
+        guess.append(1/18)
+
+    con = opt.LinearConstraint([[ 2, 2, 2, 2, 2, 2, 2, 2, 2],  #total probability 1
+                                [ 2, 2, 2, 0, 0, 0, 0, 0, 0],  #0<x1a<0.5
+                                [ 0, 0, 0, 2, 2, 2, 0, 0, 0],  #0<x1b<0.5
+                                [ 0, 0, 0, 0, 0, 0, 2, 2, 2],  #0<x1c<0.5
+                                [ 2, 0, 0, 2, 0, 0, 2, 0, 0],  #0<x2a<0.5
+                                [ 0, 2, 0, 0, 2, 0, 0, 2, 0],  #0<x2b<0.5
+                                [ 0, 0, 2, 0, 0, 2, 0, 0, 2]]  #0<x2c<0.5
+                               [1,0,0,0,0,0,0],[1,0.5,0.5,0.5,0.5,0.5,0.5])
+
+    bound = opt.bounds([0,0,0,0,0,0,0,0,0],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5])
+
+    mF, E, C =[],[],[]
     
