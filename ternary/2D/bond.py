@@ -9,6 +9,9 @@ A=0
 B=1
 C=2
 
+#Computations are done in terms of y_ij, which is an unsymmetric square matrix; the first index denotes the component on the first sublattice, and the second on the second sublattice
+#the y variable is flattened to form a 1D array to be processed by scipy.optimize
+
 #helper functions
 def xlx(x):
     if x<0: return 1
@@ -82,10 +85,12 @@ def min(J=[[1,1,1],
             [1,1,1]],
         h=[[0,1,1 ],
             [1,0,0 ]],
-        samp=51,
+        samp=50,
         Trang=[0,4]):
-
-    Temp = np.linspace(Trang[0], Trang[1], samp+1)
+    
+    delta = (Trang[1]-Trang[0])/(samp)
+    Temp = np.linspace(Trang[0]+delta, Trang[1], samp)
+    Tp   = np.linspace(Trang[0]+2*delta, Trang[1]-delta, samp-2)
 
     #starting guess
     guess=[]
@@ -103,5 +108,10 @@ def min(J=[[1,1,1],
 
     bound = opt.bounds([0,0,0,0,0,0,0,0,0],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5])
 
-    mF, E, C =[],[],[]
-    
+    mF, E, C, mY =[],[],[],[]
+
+    for i in range(len(Temp)):
+        status= 'Calculating T/J='+Str(Temp[i])
+        print(status)
+
+        free = lambda:F(J, h, y, Temp[i])

@@ -59,13 +59,14 @@ def F(J,h,z,T):
     return H(J,h,z)-T*S(z)
 
 #minimizatin
-def min(J=1, hpj=1, samp=50, Trang=[0,5]):
+def min(J=1, hpj=1, samp=50, Trang=[0,4]):
     h = hpj*abs(J)
-    Temp = np.linspace(Trang[0],Trang[1],samp+1)
+    delta = (Trang[1]-Trang[0])/(samp)
+    Temp = np.linspace(Trang[0]+delta,Trang[1],samp-1)
     
     #starting guess
-    guess=[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625]
-    #guess=[1,0,0,0,0,0]
+    #guess=[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625]
+    guess=[1,0,0,0,0,0]
 
 
     #ensure reasonable compositions
@@ -78,7 +79,6 @@ def min(J=1, hpj=1, samp=50, Trang=[0,5]):
     bound = opt.Bounds([0,0,0,0,0,0],[1,1,1,1,1,1])
     
     mF, mX, mY, E, C = [],[],[],[],[] 
-    delta = (Trang[1]-Trang[0])/samp
 
     for i in range(len(Temp)):
         status="Calculating T/J="+str(Temp[i])
@@ -138,7 +138,7 @@ def min(J=1, hpj=1, samp=50, Trang=[0,5]):
     ax.plot(mX, mY, Temp)
 
     #plot E wrt temp
-    Tp = np.linspace(Trang[0]+delta, Trang[1]-delta, samp-1)
+    Tp = np.linspace(Trang[0]+2*delta, Trang[1]-delta, samp-3)
     ax=fig.add_subplot(2,2,3)
     ax.plot(Tp, E)
     ax.set_xlabel('Temperature (T/J)')
@@ -153,11 +153,11 @@ def min(J=1, hpj=1, samp=50, Trang=[0,5]):
     ax.set_ylabel('C=-T*d2F/dT2')
 
     #high temp slope, should be ln(2)~0.693
-    slope=mF[samp]-mF[math.floor(samp*0.75)]
-    slope/=(Temp[samp]-Temp[math.floor(samp*0.75)])
+    slope=mF[samp-1]-mF[math.floor(samp*0.75)]
+    slope/=(Temp[samp-1]-Temp[math.floor(samp*0.75)])
     print('High temp slope: ' + str(slope))
     #intercept
-    intercept=mF[samp]-slope*Temp[samp]
+    intercept=mF[samp-1]-slope*Temp[samp-1]
     print('Intercept: ' +str(intercept))
     
     plt.show()
