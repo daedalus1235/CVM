@@ -4,12 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import math
 import scipy.optimize as opt
 
-#variables
-A=0
-B=1
-C=2
-
-#Computations are done in terms of y_ij, which is an unsymmetric square matrix; the first index denotes the component on the first sublattice, and the second on the second sublattice
+#Computations are done in terms of y_ij, which is an asymmetric square matrix; the first index denotes the component on the first (even) sublattice , and the second on the second (odd) sublattice
 #the y variable is flattened to form a 1D array to be processed by scipy.optimize
 
 #helper functions
@@ -25,42 +20,21 @@ def dot(M, N):
             total+= M[i][j]*N[i][j]
     return total
 
-def Xa(y, comp):
-    total=0
-    for i in range(int(math.sqrt(len(y)))):
-        total+=y[3*comp + i]
-    return total
+def Xo(y):
+    xo=[]
+    for i in range(3):
+        for j in range(3):
 
-def Xb(y, comp):
-    total=0
-    for i in range(int(math.sqrt(len(y)))):
-        total+=y[comp+3*i]
-    return total
+    return xo
 
-def X(y):
-    x=[]
-    xi=[]
-    for i in range(int(math.sqrt(len(y)))):
-        xi.append(Xa(y, i))
-    x.append(xi)
-    xi=[]
-    for i in range(int(math.sqrt(len(y)))):
-        xi.append(Xb(y, i))
-    x.append(xi)
-    return x
+def Xe(y):
+    
 
-def tot(y):
-    x=X(y)
-    total = 0
-    for xi in x: 
-        for xij in xi:
-            total += xij
-    return total
+
 
 #thermodynamic functions
 def H(J,h,y):
-    #return -dot(J,y)-dot(h,X(y))
-    return 1
+    return -dot(J,y)-dot(h,X(y))
 
 def S(y):
     Sx,Sy=0,0
@@ -82,4 +56,5 @@ def F(J,h,y,T):
 
 
 #minimization
-def min(J=[[
+def min(J=[[]], h=[[]], Trang=[0,4], samp=100):
+

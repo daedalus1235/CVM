@@ -12,6 +12,8 @@ C=2
 #Computations are done in terms of y_ij, which is an unsymmetric square matrix; the first index denotes the component on the first sublattice, and the second on the second sublattice
 #the y variable is flattened to form a 1D array to be processed by scipy.optimize
 
+#I overwrote a save which broke this program...
+
 #helper functions
 def xlx(x):
     if x<0: return 1
