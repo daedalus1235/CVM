@@ -14,7 +14,7 @@ F	binary/1D/point.py	/^def F(J,h,T,x):$/;"	f
 F	binary/2D/bond.py	/^def F(J,h,x,y,T):$/;"	f
 F	binary/2D/square.py	/^def F(J,h,z,T):$/;"	f
 F	ternary/2D/bond.py	/^def F(J,h,y,T):$/;"	f
-F	ternary/2D/bondIt.py	/^def F(J,h,y,T):$/;"	f
+F	ternary/2D/bondIt.py	/^def F(E,y,T):$/;"	f
 FvT	binary/1D/bond.py	/^def FvT(J, hpj=1):$/;"	f
 FvT	binary/1D/point.py	/^def FvT(J, hpj=1):$/;"	f
 H	binary/1D/bond.py	/^def H(J,h,x,y):$/;"	f
@@ -40,8 +40,10 @@ Xa	ternary/2D/bond.py	/^def Xa(y, comp):$/;"	f
 Xb	ternary/2D/bond.py	/^def Xb(y, comp):$/;"	f
 Xe	ternary/2D/bondIt.py	/^def Xe(y):$/;"	f
 Xo	ternary/2D/bondIt.py	/^def Xo(y):$/;"	f
+Xt	ternary/2D/bondIt.py	/^def Xt(y):$/;"	f
 XvT	binary/1D/point.py	/^def XvT(J,hpj=1):$/;"	f
 Y	binary/2D/square.py	/^def Y(z):$/;"	f
+Yt	ternary/2D/bondIt.py	/^def Yt(y):$/;"	f
 Z	binary/2D/bond.py	/^Z=4$/;"	v
 debugF	binary/2D/bond.py	/^def debugF(J=1,h=1, T=1):$/;"	f
 debugH	binary/2D/bond.py	/^def debugH(J=1,h=1):$/;"	f
@@ -55,12 +57,14 @@ fun	binary/1D/bond.py	/^        fun = lambda x: F(J, hpj*abs(J), x[0], x[1], Tpj
 fun	binary/1D/point.py	/^        fun = lambda x: F(J, hpj*abs(J), Tpj*abs(J),x)$/;"	f	function:XvT	file:
 fun	binary/1D/point.py	/^        fun = lambda x: F(J,hpj*abs(J),Tpj*abs(J),x)$/;"	f	function:FvT	file:
 fun	binary/2D/bond.py	/^        fun = lambda x: F(J, hpj*abs(J), x[0], x[1], Temp[i]*abs(J))$/;"	f	function:min	file:
+iterate	ternary/2D/bondIt.py	/^    def iterate():$/;"	f	function:min	file:
 min	binary/2D/bond.py	/^def min(J=1, hpj=1, samp=200, Trang=[0,4]):$/;"	f
 min	binary/2D/square.py	/^def min(J=1, hpj=1, samp=50, Trang=[0,4]):$/;"	f
 min	ternary/2D/bond.py	/^def min(J=[[1,1,1],$/;"	f
-min	ternary/2D/bondIt.py	/^def min(J=[[]], h=[[]], Trang=[0,4], samp=100):$/;"	f
+min	ternary/2D/bondIt.py	/^def min(E=[[]], Trang=[0,4], samp=100):$/;"	f
 minH	binary/1D/ising1D.py	/^def minH(N,h,J):$/;"	f
 mpl	binary/1D/ising1D.py	/^import matplotlib as mpl$/;"	I
+norm	ternary/2D/bondIt.py	/^def norm(y):$/;"	f
 np	binary/1D/bond.py	/^import numpy as np$/;"	I
 np	binary/1D/ising1D.py	/^import numpy as np$/;"	I
 np	binary/1D/point.py	/^import numpy as np$/;"	I
@@ -73,7 +77,6 @@ opt	binary/1D/point.py	/^import scipy.optimize as opt$/;"	I
 opt	binary/2D/bond.py	/^import scipy.optimize as opt$/;"	I
 opt	binary/2D/square.py	/^import scipy.optimize as opt$/;"	I
 opt	ternary/2D/bond.py	/^import scipy.optimize as opt$/;"	I
-opt	ternary/2D/bondIt.py	/^import scipy.optimize as opt$/;"	I
 plt	binary/1D/bond.py	/^import matplotlib.pyplot as plt$/;"	I
 plt	binary/1D/ising1D.py	/^import matplotlib.pyplot as plt$/;"	I
 plt	binary/1D/point.py	/^import matplotlib.pyplot as plt$/;"	I
@@ -82,8 +85,10 @@ plt	binary/2D/square.py	/^import matplotlib.pyplot as plt$/;"	I
 plt	ternary/2D/bond.py	/^import matplotlib.pyplot as plt$/;"	I
 plt	ternary/2D/bondIt.py	/^import matplotlib.pyplot as plt$/;"	I
 tot	ternary/2D/bond.py	/^def tot(y):$/;"	f
+transpose	ternary/2D/bondIt.py	/^def transpose(y):$/;"	f
 xlx	binary/1D/bond.py	/^def xlx(x):$/;"	f
 xlx	binary/2D/bond.py	/^def xlx(x):$/;"	f
 xlx	binary/2D/square.py	/^def xlx(x):$/;"	f
 xlx	ternary/2D/bond.py	/^def xlx(x):$/;"	f
 xlx	ternary/2D/bondIt.py	/^def xlx(x):$/;"	f
+z	ternary/2D/bondIt.py	/^z=4$/;"	v
