@@ -22,7 +22,7 @@ H	binary/1D/point.py	/^def H(J,h,x):$/;"	f
 H	binary/2D/bond.py	/^def H(J,h,x,y):$/;"	f
 H	binary/2D/square.py	/^def H(J,h,z):$/;"	f
 H	ternary/2D/bond.py	/^def H(J,h,y):$/;"	f
-H	ternary/2D/bondIt.py	/^def H(J,h,y):$/;"	f
+H	ternary/2D/bondIt.py	/^def H(E,y):$/;"	f
 Ham	binary/1D/ising1D.py	/^def Ham(s, h, J):$/;"	f
 S	binary/1D/bond.py	/^def S(x, y):$/;"	f
 S	binary/1D/point.py	/^def S(x):$/;"	f
@@ -45,9 +45,11 @@ XvT	binary/1D/point.py	/^def XvT(J,hpj=1):$/;"	f
 Y	binary/2D/square.py	/^def Y(z):$/;"	f
 Yt	ternary/2D/bondIt.py	/^def Yt(y):$/;"	f
 Z	binary/2D/bond.py	/^Z=4$/;"	v
+add	ternary/2D/bondIt.py	/^def add(M,N):$/;"	f
 debugF	binary/2D/bond.py	/^def debugF(J=1,h=1, T=1):$/;"	f
 debugH	binary/2D/bond.py	/^def debugH(J=1,h=1):$/;"	f
 debugTS	binary/2D/bond.py	/^def debugTS(Temp=1):$/;"	f
+diff	ternary/2D/bondIt.py	/^def diff(M,N):$/;"	f
 dot	ternary/2D/bond.py	/^def dot(M, N):$/;"	f
 dot	ternary/2D/bondIt.py	/^def dot(M, N):$/;"	f
 free	binary/2D/square.py	/^        free = lambda z: F(J, h, z, Temp[i]*abs(J))$/;"	f	function:min	file:
@@ -61,10 +63,10 @@ iterate	ternary/2D/bondIt.py	/^    def iterate():$/;"	f	function:min	file:
 min	binary/2D/bond.py	/^def min(J=1, hpj=1, samp=200, Trang=[0,4]):$/;"	f
 min	binary/2D/square.py	/^def min(J=1, hpj=1, samp=50, Trang=[0,4]):$/;"	f
 min	ternary/2D/bond.py	/^def min(J=[[1,1,1],$/;"	f
-min	ternary/2D/bondIt.py	/^def min(E=[[]], Trang=[0,4], samp=100):$/;"	f
+min	ternary/2D/bondIt.py	/^def min(Eb=[[0,1,1],[1,0,0],[1,0,0]], Trang=[0,4], samp=100):$/;"	f
 minH	binary/1D/ising1D.py	/^def minH(N,h,J):$/;"	f
 mpl	binary/1D/ising1D.py	/^import matplotlib as mpl$/;"	I
-norm	ternary/2D/bondIt.py	/^def norm(y):$/;"	f
+norm	ternary/2D/bondIt.py	/^def norm(M):$/;"	f
 np	binary/1D/bond.py	/^import numpy as np$/;"	I
 np	binary/1D/ising1D.py	/^import numpy as np$/;"	I
 np	binary/1D/point.py	/^import numpy as np$/;"	I
