@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import math
+import copy
 
 #Computations are done in terms of y_ij, which is an asymmetric square matrix; the first index denotes the component on the first (even) sublattice , and the second on the second (odd) sublattice
 #helper functions are written to accept square matrices of any size, so can be used for an n-ary composition of arbitrary n>1.
@@ -23,6 +24,13 @@ def dot(M, N):
 
 def norm(M):
     return dot(M,M)
+
+def abstot(M):
+    total=0
+    for mi in M:
+        for mij in mi:
+            total+=abs(mij)
+    return total            
 
 def diff(M,N):
     difference=[]
@@ -98,28 +106,26 @@ def F(E,y,T):
 
 
 #minimization
-def min(Eb=[[0,1,1],[1,0,0],[1,0,0]], Trang=[0,4], samp=100):
-    T=0
-    def iterate():
-        yt=y
-        for i in range(len(y)):
-            for j in range(len(y[i])):
-                yt[i][j]=math.exp(-Eb[i][j]/T)
-                yt[i][j]*=(Xe(y)[i]*Xo(y)[j])**((z-1)/z)
-        
-        total = 0
-        for yi in yt:
-            for yij in yi:
-                total+=yij
-                
-        for i in range(len(yt)):
-            for j in range(len(yt[i])):
-                y[i][j]=y[i][j]/total
-        
-        print('Updated y:'+str(yt))
+def iterate(ycur, Eb, T):
+    yres=copy.deepcopy(ycur)
+    for i in range(len(ycur)):
+        for j in range(len(ycur[i])):
+            yres[i][j]=math.exp(-Eb[i][j]/T)
+            yres[i][j]*=((Xe(ycur)[i]*Xo(ycur)[j])**((z-1)/z))
+    total = 0
+    for yi in yres:
+        for yij in yi:
+            total+=yij
+            
+    for i in range(len(yres)):
+        for j in range(len(yres[i])):
+            yres[i][j]=yres[i][j]/total
 
-        return yt
-    
+    return yres
+
+MAX_COUNTER=1000
+
+def min(Eb=[[0,1,1],[1,0,0],[1,0,0]], Trang=[0,5], samp=1000):
     delta = (Trang[1]-Trang[0])/samp
     temp = np.linspace(Trang[0]+delta, Trang[1], samp)
     tp = np.linspace(Trang[0]+2*delta, Trang[1]-delta, samp-2)
@@ -128,18 +134,24 @@ def min(Eb=[[0,1,1],[1,0,0],[1,0,0]], Trang=[0,4], samp=100):
     
     for i in range(len(temp)):
         print('Calculating T='+str(temp[i]))
-        counter = 100
+        counter = MAX_COUNTER
         T=temp[i]
         y=[[0.333, 0, 0],[0, 0.333, 0],[0, 0, 0.333]] #starting guess
-        yt=[[0, 0, 0],[0, 0, 0],[0, 0, 0]]            #initialize
+        yold=[[0, 0, 0],[0, 0, 0],[0, 0, 0]]          #initialize for loop
+        change=1
 
-        while(norm(diff(y,yt))>1e-9):
-            y=yt
+        while(change>1e-18):
+            yold=copy.deepcopy(y)
+            y=iterate(yold, Eb, T)
             counter-=1
             if(counter<1):
+                print('  Max Iterations Reached')
                 break
-            yt=iterate()
-        
+            change=abstot(diff(y,yold))
+
+        print('    steps taken:'+str(MAX_COUNTER-counter))
+        print('    last change='+str(change))
+
         mY.append(y)
         mF.append(F(Eb,y,T))
 
