@@ -8,7 +8,14 @@ import copy
 #helper functions are written to accept square matrices of any size, so can be used for an n-ary composition of arbitrary n>1.
 
 #helper functions and variables
+MAX_COUNTER=512
+
 z=4
+
+A=0
+B=1
+C=2
+
 
 def xlx(x):
     if x<0: return 1
@@ -110,7 +117,7 @@ def iterate(ycur, Eb, T):
     yres=copy.deepcopy(ycur)
     for i in range(len(ycur)):
         for j in range(len(ycur[i])):
-            yres[i][j]=math.exp(-Eb[i][j]/T)
+            yres[i][j]=math.exp(Eb[i][j]/T)
             yres[i][j]*=((Xe(ycur)[i]*Xo(ycur)[j])**((z-1)/z))
     total = 0
     for yi in yres:
@@ -123,15 +130,14 @@ def iterate(ycur, Eb, T):
 
     return yres
 
-MAX_COUNTER=1000
 
-def min(Eb=[[0,1,1],[1,0,0],[1,0,0]], Trang=[0,5], samp=1000):
+def min(Eb=[[0,1,1],[1,0,0],[1,0,0]], Trang=[0,4], samp=200):
     delta = (Trang[1]-Trang[0])/samp
     temp = np.linspace(Trang[0]+delta, Trang[1], samp)
     tp = np.linspace(Trang[0]+2*delta, Trang[1]-delta, samp-2)
 
     mY,mF,E,C=[],[],[],[]
-    
+    xA, xB, xC=[],[],[] 
     for i in range(len(temp)):
         print('Calculating T='+str(temp[i]))
         counter = MAX_COUNTER
@@ -140,7 +146,7 @@ def min(Eb=[[0,1,1],[1,0,0],[1,0,0]], Trang=[0,5], samp=1000):
         yold=[[0, 0, 0],[0, 0, 0],[0, 0, 0]]          #initialize for loop
         change=1
 
-        while(change>1e-18):
+        while(change>1e-15):
             yold=copy.deepcopy(y)
             y=iterate(yold, Eb, T)
             counter-=1
@@ -151,6 +157,11 @@ def min(Eb=[[0,1,1],[1,0,0],[1,0,0]], Trang=[0,5], samp=1000):
 
         print('    steps taken:'+str(MAX_COUNTER-counter))
         print('    last change='+str(change))
+        
+        x=Xe(y)
+        xA.append(x[0])
+        xB.append(x[1])
+        xC.append(x[2])
 
         mY.append(y)
         mF.append(F(Eb,y,T))
@@ -169,7 +180,15 @@ def min(Eb=[[0,1,1],[1,0,0],[1,0,0]], Trang=[0,5], samp=1000):
     fig = plt.figure()
     fig.suptitle('2D square lattice, bond approx, ternary composition')
     
-    #todo: composition plot
+    ax=fig.add_subplot(2,2,1)
+    ax.set_xlabel('Temperature')
+    ax.set_ylabel('Composition')
+    ax.set_ylim(-0.1,1.1)
+    ax.plot(temp,xA,label='A')
+    ax.plot(temp,xB,label='B')
+    ax.plot(temp,xC,label='C')
+    ax.legend()
+
 
     ax=fig.add_subplot(2,2,2)
     ax.set_xlabel('Temperature')

@@ -7,8 +7,11 @@
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
 !_TAG_PROGRAM_VERSION	0.0.0	/a3c87ab5/
 A	ternary/2D/bond.py	/^A=0$/;"	v
+A	ternary/2D/bondIt.py	/^A=0$/;"	v
 B	ternary/2D/bond.py	/^B=1$/;"	v
+B	ternary/2D/bondIt.py	/^B=1$/;"	v
 C	ternary/2D/bond.py	/^C=2$/;"	v
+C	ternary/2D/bondIt.py	/^C=2$/;"	v
 F	binary/1D/bond.py	/^def F(J,h,x,y,T):$/;"	f
 F	binary/1D/point.py	/^def F(J,h,T,x):$/;"	f
 F	binary/2D/bond.py	/^def F(J,h,x,y,T):$/;"	f
@@ -24,7 +27,7 @@ H	binary/2D/square.py	/^def H(J,h,z):$/;"	f
 H	ternary/2D/bond.py	/^def H(J,h,y):$/;"	f
 H	ternary/2D/bondIt.py	/^def H(E,y):$/;"	f
 Ham	binary/1D/ising1D.py	/^def Ham(s, h, J):$/;"	f
-MAX_COUNTER	ternary/2D/bondIt.py	/^MAX_COUNTER=1000$/;"	v
+MAX_COUNTER	ternary/2D/bondIt.py	/^MAX_COUNTER=512$/;"	v
 S	binary/1D/bond.py	/^def S(x, y):$/;"	f
 S	binary/1D/point.py	/^def S(x):$/;"	f
 S	binary/2D/bond.py	/^def S(x, y):$/;"	f
@@ -65,7 +68,7 @@ iterate	ternary/2D/bondIt.py	/^def iterate(ycur, Eb, T):$/;"	f
 min	binary/2D/bond.py	/^def min(J=1, hpj=1, samp=200, Trang=[0,4]):$/;"	f
 min	binary/2D/square.py	/^def min(J=1, hpj=1, samp=50, Trang=[0,4]):$/;"	f
 min	ternary/2D/bond.py	/^def min(J=[[1,1,1],$/;"	f
-min	ternary/2D/bondIt.py	/^def min(Eb=[[0,1,1],[1,0,0],[1,0,0]], Trang=[0,5], samp=1000):$/;"	f
+min	ternary/2D/bondIt.py	/^def min(Eb=[[0,1,1],[1,0,0],[1,0,0]], Trang=[0,4], samp=200):$/;"	f
 minH	binary/1D/ising1D.py	/^def minH(N,h,J):$/;"	f
 mpl	binary/1D/ising1D.py	/^import matplotlib as mpl$/;"	I
 norm	ternary/2D/bondIt.py	/^def norm(M):$/;"	f
