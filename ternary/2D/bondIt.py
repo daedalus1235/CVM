@@ -12,9 +12,14 @@ MAX_COUNTER=512
 
 z=4
 
-A=0
-B=1
-C=2
+cA=[[2,1,1],[1,0,0],[1,0,0]]
+cB=[[0,1,0],[1,2,1],[0,1,0]]
+cC=[[0,0,1],[0,0,1],[1,1,2]]
+
+lA=1
+lB=.5
+lC=.5
+
 
 
 def xlx(x):
@@ -30,7 +35,7 @@ def dot(M, N):
     return total
 
 def norm(M):
-    return dot(M,M)
+    return math.sqrt(dot(M,M))
 
 def abstot(M):
     total=0
@@ -67,8 +72,7 @@ def transpose(y):
     return yT
 
 def Yt(y):
-    #return add(y, transpose(y))
-    return y
+    return add(y, transpose(y))
 
 def Xe(y):
     xe=[]
@@ -92,79 +96,115 @@ def Xt(y):
 
 #thermodynamic functions
 def H(E,y):
-    return -(z/2)*dot(E,Yt(y))
+    return z*dot(E,y)
 
 def S(y):
-    Sx,Sy=0,0
-    x=Xe(y)#+Xo(y)
+    Sxlx, Syly=0,0
+    x=Xe(y)+Xo(y)
 
     for xi in x:
-        Sx-=xlx(xi)
+        Sxlx+=xlx(2*xi)
 
     for yi in y:
         for yij in yi:
-            Sy-=xlx(yij)
+            Syly+=xlx(2*yij)
 
-    return 2*Sy-3*Sx
+    return (z-1)/2*Sxlx-z/2*Syly
 
 def F(E,y,T):
     if T==0: return H(E,y)
     return H(E,y)-T*S(y)
 
+def Grand(E,y,T):
+    xt=Xt(y)
+    return F(E,y,T)-lA*xt[0]-lB*xt[1]-lC*xt[2]
 
 #minimization
-def iterate(ycur, Eb, T):
+def ytilde(ycur, Eb, T):
     yres=copy.deepcopy(ycur)
     for i in range(len(ycur)):
         for j in range(len(ycur[i])):
-            yres[i][j]=math.exp(Eb[i][j]/T)
+            yres[i][j]=math.exp(-Eb[i][j]/T)
             yres[i][j]*=((Xe(ycur)[i]*Xo(ycur)[j])**((z-1)/z))
-    total = 0
-    for yi in yres:
-        for yij in yi:
-            total+=yij
-            
-    for i in range(len(yres)):
-        for j in range(len(yres[i])):
-            yres[i][j]=yres[i][j]/total
 
+            yres[i][j]*=(lA**(cA[i][j]/(z*T)))
+            yres[i][j]*=(lB**(cB[i][j]/(z*T)))
+            yres[i][j]*=(lC**(cC[i][j]/(z*T)))
+
+
+    yres=normalize(yres,T)  
     return yres
 
+def normalize(ytil, T):
+    #no constraints
+    yres=copy.deepcopy(ytil)
+    total = 0
+    for yi in ytil:
+        for yij in yi:
+            total+=yij
+    for i in range(len(ytil)):
+        for j in range(len(ytil[i])):
+            yres[i][j]=ytil[i][j]/(2*total)
+    return yres        
+    
+    #this is hardcoded for A2BC composition constraints
 
-def min(Eb=[[0,1,1],[1,0,0],[1,0,0]], Trang=[0,4], samp=200):
+
+def min(Eb=[[0,1,1],
+            [1,0,0],
+            [1,0,0]],
+        Trang=[0,5],
+        samp=200,
+        guess=[[0.333,0,0],
+               [0, 0.333, 0],
+               [0.333,0,0]]):
     delta = (Trang[1]-Trang[0])/samp
     temp = np.linspace(Trang[0]+delta, Trang[1], samp)
     tp = np.linspace(Trang[0]+2*delta, Trang[1]-delta, samp-2)
+    
+    y=normalize(guess,0)
 
-    mY,mF,E,C=[],[],[],[]
-    xA, xB, xC=[],[],[] 
+    mY,mF,E,C, mG=[],[],[],[],[]
+    xAe, xBe, xCe =[],[],[]
+    xAo, xBo, xCo =[],[],[]
+    xAt, xBt, xCt =[],[],[]
     for i in range(len(temp)):
         print('Calculating T='+str(temp[i]))
         counter = MAX_COUNTER
         T=temp[i]
-        y=[[0.333, 0, 0],[0, 0.333, 0],[0, 0, 0.333]] #starting guess
         yold=[[0, 0, 0],[0, 0, 0],[0, 0, 0]]          #initialize for loop
         change=1
 
         while(change>1e-15):
             yold=copy.deepcopy(y)
-            y=iterate(yold, Eb, T)
+            y=ytilde(yold, Eb, T)
             counter-=1
             if(counter<1):
                 print('  Max Iterations Reached')
                 break
-            change=abstot(diff(y,yold))
+            change=norm(diff(y,yold))
 
         print('    steps taken:'+str(MAX_COUNTER-counter))
         print('    last change='+str(change))
         
         x=Xe(y)
-        xA.append(x[0])
-        xB.append(x[1])
-        xC.append(x[2])
+        xAe.append(x[0])
+        xBe.append(x[1])
+        xCe.append(x[2])
+
+        x=Xo(y)
+        xAo.append(x[0])
+        xBo.append(x[1])
+        xCo.append(x[2])
+        
+        x=Xt(y)
+        xAt.append(x[0])
+        xBt.append(x[1])
+        xCt.append(x[2])
 
         mY.append(y)
         mF.append(F(Eb,y,T))
+        mG.append(Grand(Eb,y,T))
 
         if i>1:
             #calculate E
@@ -180,28 +220,44 @@ def min(Eb=[[0,1,1],[1,0,0],[1,0,0]], Trang=[0,4], samp=200):
     fig = plt.figure()
     fig.suptitle('2D square lattice, bond approx, ternary composition')
     
-    ax=fig.add_subplot(2,2,1)
+    ax=fig.add_subplot(3,2,1)
     ax.set_xlabel('Temperature')
     ax.set_ylabel('Composition')
-    ax.set_ylim(-0.1,1.1)
-    ax.plot(temp,xA,label='A')
-    ax.plot(temp,xB,label='B')
-    ax.plot(temp,xC,label='C')
+    ax.set_ylim(-0.05,0.55)
+    ax.plot(temp,xAe,label='Ae', alpha=0.6)
+    ax.plot(temp,xBe,label='Be', alpha=0.6)
+    ax.plot(temp,xCe,label='Ce', alpha=0.6)
+    ax.plot(temp,xAo,label='Ao', alpha=0.6)
+    ax.plot(temp,xBo,label='Bo', alpha=0.6)
+    ax.plot(temp,xCo,label='Co', alpha=0.6)
     ax.legend()
 
+    ax=fig.add_subplot(3,2,2)
+    ax.set_xlabel('Temperature')
+    ax.set_ylabel('Composition')
+    ax.set_ylim(-0.05,1.05)
+    ax.plot(temp,xAt,label='At', alpha=0.6)
+    ax.plot(temp,xBt,label='Bt', alpha=0.6)
+    ax.plot(temp,xCt,label='Ct', alpha=0.6)
+    ax.legend()
 
-    ax=fig.add_subplot(2,2,2)
+    ax=fig.add_subplot(3,2,3)
     ax.set_xlabel('Temperature')
     ax.set_ylabel('Free Energy')
     ax.plot(temp,mF)
+    
+    ax=fig.add_subplot(3,2,4)
+    ax.set_xlabel('Temperature')
+    ax.set_ylabel('Grand Potential')
+    ax.plot(temp,mG)
 
-    ax=fig.add_subplot(2,2,3)
+    ax=fig.add_subplot(3,2,5)
     ax.set_xlabel('Temperature')
     ax.set_ylabel('E=F-T*dF/dT')
     ax.set_ylim(-5,5)
     ax.plot(tp, E)
 
-    ax=fig.add_subplot(2,2,4)
+    ax=fig.add_subplot(3,2,6)
     ax.set_xlabel('Temperature')
     ax.set_ylabel('C=-T*d2F/dT2')
     ax.set_ylim(-5,5)
