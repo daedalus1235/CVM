@@ -51,15 +51,15 @@ def S(z):
         Sx-=a[i]*xlx(x[i])
     
     return Sx-2*Sy+Sz  #square
-    #return 2*Sy-3*Sx   #bond
-    #return Sx
+    return 2*Sy-3*Sx   #bond
+    return Sx
     
 def F(J,h,z,T):
     if T == 0: return H(J,h,z) #might as well skip entropy calc if possible
     return H(J,h,z)-T*S(z)
 
 #minimizatin
-def min(J=1, hpj=1, samp=50, Trang=[0,4]):
+def min(J=-1, hpj=0, samp=50, Trang=[0,4]):
     h = hpj*abs(J)
     delta = (Trang[1]-Trang[0])/(samp)
     Temp = np.linspace(Trang[0]+delta,Trang[1],samp-1)
@@ -91,8 +91,8 @@ def min(J=1, hpj=1, samp=50, Trang=[0,4]):
                 constraints = con,                 #set constraints...
                 bounds = bound,                    #... and bounds on variables
                 options = {'gtol': 1e-12,          #gradient tolerance (?)
-                    'maxiter': 2500# ,               #maximum number of iterations
-                    #'xtol': 1e-9                  #x tolerance between iterations
+                    'maxiter': 2500#,               #maximum number of iterations
+                    #'xtol': 1e-9                   #x tolerance between iterations
                 })
         
         mF.append(free(res.x))
@@ -153,11 +153,11 @@ def min(J=1, hpj=1, samp=50, Trang=[0,4]):
     ax.set_ylabel('C=-T*d2F/dT2')
 
     #high temp slope, should be ln(2)~0.693
-    slope=mF[samp-1]-mF[math.floor(samp*0.75)]
-    slope/=(Temp[samp-1]-Temp[math.floor(samp*0.75)])
+    slope=mF[samp-2]-mF[math.floor(samp*0.75)]
+    slope/=(Temp[samp-2]-Temp[math.floor(samp*0.75)])
     print('High temp slope: ' + str(slope))
     #intercept
-    intercept=mF[samp-1]-slope*Temp[samp-1]
+    intercept=mF[samp-2]-slope*Temp[samp-2]
     print('Intercept: ' +str(intercept))
     
     plt.show()
