@@ -14,7 +14,7 @@ def xlx(x):
     return x*math.log(x)
 
 def H(J,h,x):
-    return -J*x*(1-x)-h*x
+    return -J*(Z/2)*x*(1-x)-h*x
 
 def S(x):
     return -xlx(x)-xlx(1-x)
