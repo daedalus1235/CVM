@@ -146,18 +146,15 @@ def normalize(ytil, T):
         for j in range(len(ytil[i])):
             yres[i][j]=ytil[i][j]/(2*total)
     return yres        
-    
-    #this is hardcoded for A2BC composition constraints
 
-
-def min(Eb=[[0,1,1],
-            [1,0,0],
-            [1,0,0]],
+def min(Eb=[[0,-1,-1],
+            [-1,0,0],
+            [-1,0,0]],
         Trang=[0,5],
         samp=200,
-        guess=[[0.333,0,0],
-               [0, 0.333, 0],
-               [0.333,0,0]]):
+        guess=[[25,212.5,212.5],
+               [12.5,12.5,0],
+               [12.5,0,12.5]]):
     delta = (Trang[1]-Trang[0])/samp
     temp = np.linspace(Trang[0]+delta, Trang[1], samp)
     tp = np.linspace(Trang[0]+2*delta, Trang[1]-delta, samp-2)

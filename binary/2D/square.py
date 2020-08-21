@@ -51,14 +51,12 @@ def S(z):
         Sx-=a[i]*xlx(x[i])
     
     return Sx-2*Sy+Sz  #square
-    return 2*Sy-3*Sx   #bond
-    return Sx
     
 def F(J,h,z,T):
     if T == 0: return H(J,h,z) #might as well skip entropy calc if possible
     return H(J,h,z)-T*S(z)
 
-#minimizatin
+#minimization
 def min(J=-1, hpj=0, samp=50, Trang=[0,4]):
     h = hpj*abs(J)
     delta = (Trang[1]-Trang[0])/(samp)
@@ -90,17 +88,17 @@ def min(J=-1, hpj=0, samp=50, Trang=[0,4]):
                 method = 'trust-constr',           #optimization method
                 constraints = con,                 #set constraints...
                 bounds = bound,                    #... and bounds on variables
-                options = {'gtol': 1e-12,          #gradient tolerance (?)
-                    'maxiter': 2500#,               #maximum number of iterations
-                    #'xtol': 1e-9                   #x tolerance between iterations
-                })
+                options = {'gtol': 1e-15,          #gradient tolerance (?)
+                    'maxiter': 2500                #maximum number of iterations
+                }
+                )
         
         mF.append(free(res.x))
         tempx=X(res.x)
         mX.append(tempx[0])
         tempy=Y(res.x)
         mY.append(tempy[1])
-        guess = res.x
+        #guess = res.x
 
         if tempy[1]>0.5:
             print(res)
@@ -115,7 +113,7 @@ def min(J=-1, hpj=0, samp=50, Trang=[0,4]):
             dF/=(2*delta)
             E.append(mF[i-1]-Temp[i-1]*dF)
             #calculate C
-            ddF=mF[i]-2*mF[i-1]+mF[i-1]
+            ddF=mF[i]-2*mF[i-1]+mF[i-2]
             ddF/=(delta**2)
             C.append(-Temp[i-1]*ddF)
 
