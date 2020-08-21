@@ -243,11 +243,6 @@ def min(Eb=[[0,-1,-1],
     ax.set_ylabel('Free Energy')
     ax.plot(temp,mF)
     
-    ax=fig.add_subplot(3,2,4)
-    ax.set_xlabel('Temperature')
-    ax.set_ylabel('Grand Potential')
-    ax.plot(temp,mG)
-
     ax=fig.add_subplot(3,2,5)
     ax.set_xlabel('Temperature')
     ax.set_ylabel('E=F-T*dF/dT')
@@ -269,9 +264,3 @@ def min(Eb=[[0,-1,-1],
     print('Intercept: ' + str(intercept))
 
     plt.show()
-
-
-
-
-
-
