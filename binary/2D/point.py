@@ -14,7 +14,7 @@ def xlx(x):
     return x*math.log(x)
 
 def H(J,h,x):
-    return -J*(Z/2)*x*(1-x)-h*x
+    return -J*(Z/2)*(4*x*(1-x)-1)-h*x
 
 def S(x):
     return -xlx(x)-xlx(1-x)
@@ -23,7 +23,7 @@ def F(J,h,x,T):
     if T==0: return H(J,h,x)
     return H(J, h, x)-T*S(x)
 
-def min(J=1, hpj=1, samp=200, Trang=[0,4]):
+def min(J=-1, hpj=0, samp=200, Trang=[0,5]):
     Temp = np.linspace(Trang[0],Trang[1],samp+1) 
     
     bound = opt.Bounds([0.0],[1.0])
