@@ -1,3 +1,4 @@
+import csv
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -91,6 +92,11 @@ def min(J=-1, hpj=0, samp=200, Trang=[0,5]):
     #intercept
     intercept=Free[samp]-slope*Temp[samp]
     print('Intercept: ' + str(intercept))
+
+    with open('point.csv', mode='w') as output:
+        outputwriter = csv.writer(output, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        for i in range(len(Temp)):
+            outputwriter.writerow([Temp[i], mX[i]])
 
     #display plots
     plt.show()

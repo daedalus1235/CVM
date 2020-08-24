@@ -17,7 +17,7 @@ cB=[[0,1,0],[1,2,1],[0,1,0]]
 cC=[[0,0,1],[0,0,1],[1,1,2]]
 
 lA=1
-lB=.5
+lB=0.6
 lC=.5
 
 
@@ -115,10 +115,6 @@ def F(E,y,T):
     if T==0: return H(E,y)
     return H(E,y)-T*S(y)
 
-def Grand(E,y,T):
-    xt=Xt(y)
-    return F(E,y,T)-lA*xt[0]-lB*xt[1]-lC*xt[2]
-
 #minimization
 def ytilde(ycur, Eb, T):
     yres=copy.deepcopy(ycur)
@@ -161,7 +157,7 @@ def min(Eb=[[0,-1,-1],
     
     y=normalize(guess,0)
 
-    mY,mF,E,C, mG=[],[],[],[],[]
+    mY,mF,E,C=[],[],[],[]
     xAe, xBe, xCe =[],[],[]
     xAo, xBo, xCo =[],[],[]
     xAt, xBt, xCt =[],[],[]
@@ -201,7 +197,6 @@ def min(Eb=[[0,-1,-1],
 
         mY.append(y)
         mF.append(F(Eb,y,T))
-        mG.append(Grand(Eb,y,T))
 
         if i>1:
             #calculate E
