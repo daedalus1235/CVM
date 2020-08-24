@@ -58,7 +58,7 @@ def F(J,h,z,T):
     return H(J,h,z)-T*S(z)
 
 #minimization
-def min(J=-1, hpj=0, samp=251, Trang=[0,5]):
+def min(J=-1, hpj=0, samp=249, Trang=[0,5]):
     h = hpj*abs(J)
     delta = (Trang[1]-Trang[0])/(samp)
     Temp = np.linspace(Trang[0]+delta,Trang[1],samp-1)
