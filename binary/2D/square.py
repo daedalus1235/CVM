@@ -1,3 +1,4 @@
+import csv
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -57,7 +58,7 @@ def F(J,h,z,T):
     return H(J,h,z)-T*S(z)
 
 #minimization
-def min(J=-1, hpj=0, samp=50, Trang=[0,4]):
+def min(J=-1, hpj=0, samp=251, Trang=[0,5]):
     h = hpj*abs(J)
     delta = (Trang[1]-Trang[0])/(samp)
     Temp = np.linspace(Trang[0]+delta,Trang[1],samp-1)
@@ -84,7 +85,7 @@ def min(J=-1, hpj=0, samp=50, Trang=[0,4]):
 
         free = lambda z: F(J, h, z, Temp[i]*abs(J))
         res = opt.minimize(free,                   #minimize free energy
-                guess,                             #guess is updated to previous result
+                guess,                             #guess
                 method = 'trust-constr',           #optimization method
                 constraints = con,                 #set constraints...
                 bounds = bound,                    #... and bounds on variables
@@ -98,7 +99,7 @@ def min(J=-1, hpj=0, samp=50, Trang=[0,4]):
         mX.append(tempx[0])
         tempy=Y(res.x)
         mY.append(tempy[1])
-        #guess = res.x
+        #guess = res.x          #update guess from previous result
 
         if tempy[1]>0.5:
             print(res)
@@ -147,7 +148,7 @@ def min(J=-1, hpj=0, samp=50, Trang=[0,4]):
     ax=fig.add_subplot(2,2,4)
     ax.plot(Tp, C)
     ax.set_xlabel('Temperature (T/J)')
-    #ax.set_ylim(-10,10)
+    ax.set_ylim(-5,5)
     ax.set_ylabel('C=-T*d2F/dT2')
 
     #high temp slope, should be ln(2)~0.693
@@ -158,5 +159,11 @@ def min(J=-1, hpj=0, samp=50, Trang=[0,4]):
     intercept=mF[samp-2]-slope*Temp[samp-2]
     print('Intercept: ' +str(intercept))
     
+    #write csv of x vs T
+    with open('square.csv', mode='w') as output:
+        outputwriter=csv.writer(output, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        for i in range(len(Temp)):
+            outputwriter.writerow([Temp[i],mX[i]])
+
     plt.show()
 

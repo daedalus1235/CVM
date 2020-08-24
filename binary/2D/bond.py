@@ -1,3 +1,4 @@
+import csv
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -32,12 +33,12 @@ def F(J,h,x,y,T):
     if T==0: return H(J,h,x,y)
     return H(J, h, x, y)-T*S(x,y)
 
-def min(J=1, hpj=1, samp=200, Trang=[0,4]):
+def min(J=-1, hpj=0, samp=250, Trang=[0,5]):
     Temp = np.linspace(Trang[0],Trang[1],samp+1) 
     
     con = opt.LinearConstraint([[-1,1],[1,1]],[-np.inf,-np.inf],[0.0,1.0])
     bound = opt.Bounds([0.0,0.0],[1.0,0.5])
-    guess = [0.,0.]
+    guess = [1.,0.]
     
     Free, E, C, mX, mY=[],[],[],[],[]
     delta = (Trang[1]-Trang[0])/samp
@@ -104,6 +105,12 @@ def min(J=1, hpj=1, samp=200, Trang=[0,4]):
     #intercept
     intercept=Free[samp]-slope*Temp[samp]
     print('Intercept: ' + str(intercept))
+
+    #write csv of x vs T
+    with open('bond.csv', mode='w') as output:
+        outputwriter=csv.writer(output, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        for i in range(len(Temp)):
+            outputwriter.writerow([Temp[i],mX[i]])
 
     #display plots
     plt.show()

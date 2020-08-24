@@ -24,11 +24,11 @@ def F(J,h,x,T):
     if T==0: return H(J,h,x)
     return H(J, h, x)-T*S(x)
 
-def min(J=-1, hpj=0, samp=200, Trang=[0,5]):
+def min(J=-1, hpj=0, samp=500, Trang=[0,5]):
     Temp = np.linspace(Trang[0],Trang[1],samp+1) 
     
     bound = opt.Bounds([0.0],[1.0])
-    guess = [0.]
+    guess = [1.]
     
     Free, E, C, mX=[],[],[],[]
     delta = (Trang[1]-Trang[0])/samp
@@ -93,6 +93,7 @@ def min(J=-1, hpj=0, samp=200, Trang=[0,5]):
     intercept=Free[samp]-slope*Temp[samp]
     print('Intercept: ' + str(intercept))
 
+    #write csv of x vs T
     with open('point.csv', mode='w') as output:
         outputwriter = csv.writer(output, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         for i in range(len(Temp)):
