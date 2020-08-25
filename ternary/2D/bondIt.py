@@ -123,10 +123,8 @@ def ytilde(ycur, Eb, T, m):
             yres[i][j]=math.exp(-Eb[i][j]/T)
             yres[i][j]*=((Xe(ycur)[i]*Xo(ycur)[j])**((z-1)/z))
             #apply lagrange multipliers
-            #breaks for m<~0.2 bc exp->overflow
-            for k in range(3):
-                yres[i][j]*=(m[k]**(c[k][i][j]/(z*T)))
-
+            for k in range(len(m)):
+                yres[i][j]*=math.exp(m[k]*c[k][i][j]/(z*T))
 
     yres=normalize(yres,T)  
     return yres
